@@ -1,0 +1,28 @@
+{% extends 'base_generic.html' %} {% block title %}Browse Articles{% endblock %}
+{% block content %}
+<h1>Browse Articles</h1>
+<form method="GET" class="form-inline my-2 my-lg-0">
+  <input
+    class="form-control mr-sm-2"
+    type="text"
+    name="keyword"
+    placeholder="Search by keyword"
+  />
+  <select class="form-control mr-sm-2" name="category">
+    <option value="">All Categories</option>
+    {% for category in categories %}
+    <option value="{{ category.name }}">{{ category.name }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+    Search
+  </button>
+</form>
+<ul class="list-group mt-4">
+  {% for article in articles %}
+  <li class="list-group-item">
+    {{ article.title }} - {{ article.category.name }}
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}
