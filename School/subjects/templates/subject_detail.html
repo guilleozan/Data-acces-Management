@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <h3>{{ subject.title }}</h3>
+    <img src="{{ subject.image.url }}" alt="{{ subject.title }}" class="img-fluid mb-3">
+    <p>{{ subject.description }}</p>
+</div>
+{% endblock %}
