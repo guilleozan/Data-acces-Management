@@ -18,6 +18,7 @@ class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
     class Meta:
         db_table = 'Categories'
+        
 
 class Article(models.Model):
     article_id = models.AutoField(primary_key=True)
