@@ -10,8 +10,6 @@
   />
   <select class="form-control mr-sm-2" name="category">
     <option value="">All Categories</option>
-    <option value="">Name</option>
-    <option value="">Subject</option>
     {% for category in categories %}
     <option value="{{ category.name }}">{{ category.name }}</option>
     {% endfor %}

@@ -2,14 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import ArticleForm
-from .models import Article
+from .models import Article, Category
 
 def home(request):
     return render(request, 'home.html')
 
 def browse_articles(request):
-    articles = Article.objects.all()
-    return render(request, 'browse_articles.html', {'articles': articles})
+    articles = Article.objects.all().select_related('category')  # Optimized queryset
+    categories = Category.objects.all()
+    return render(request, 'browse_articles.html', {'articles': articles, 'categories': categories})
 
 def add_article(request):
     if request.method == 'POST':
