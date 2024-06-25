@@ -2,14 +2,36 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import ArticleForm
-from .models import Article, Category
+from .models import Article, Category  
 
+"""
+I will add a proper add_article, as add article shows articles, 
+so problably i'll change that later.
+
+ missing : 
+ articles_detailes
+ edit_articles
+ delete_articles
+
+
+"""
 def home(request):
     return render(request, 'home.html')
 
 def browse_articles(request):
-    articles = Article.objects.all().select_related('category')  # Optimized queryset
+    keyword = request.GET.get('keyword', '')
+    category_name = request.GET.get('category', '')
+
+    articles = Article.objects.all()
+
+    if keyword:
+        articles = articles.filter(title__icontains=keyword)
+
+    if category_name:
+        articles = articles.filter(category__name=category_name)
+
     categories = Category.objects.all()
+
     return render(request, 'browse_articles.html', {'articles': articles, 'categories': categories})
 
 def add_article(request):
@@ -49,3 +71,5 @@ def logout_view(request):
         logout(request)
         return redirect('home')
     return render(request, 'logged_out.html')
+
+
