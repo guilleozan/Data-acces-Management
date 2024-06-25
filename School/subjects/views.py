@@ -2,8 +2,19 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import ArticleForm
-from .models import Article, Category  # Asegúrate de importar Category si no lo has hecho ya
+from .models import Article, Category  
 
+"""
+I will add a proper add_article, as add article shows articles, 
+so problably i'll change that later.
+
+ missing : 
+ articles_detailes
+ edit_articles
+ delete_articles
+
+
+"""
 def home(request):
     return render(request, 'home.html')
 
