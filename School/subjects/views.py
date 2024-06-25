@@ -67,9 +67,7 @@ def login_view(request):
     return render(request, 'auth/login.html', {'form': form})
 
 def logout_view(request):
-    if request.method == 'POST':
-        logout(request)
-        return redirect('home')
+    logout(request)
     return render(request, 'auth/logged_out.html')
 
 
