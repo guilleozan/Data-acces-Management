@@ -53,7 +53,7 @@ def signup(request):
             return redirect('home')
     else:
         form = UserCreationForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'auth/signup.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -64,12 +64,12 @@ def login_view(request):
             return redirect('home')
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'auth/login.html', {'form': form})
 
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
         return redirect('home')
-    return render(request, 'logged_out.html')
+    return render(request, 'auth/logged_out.html')
 
 
