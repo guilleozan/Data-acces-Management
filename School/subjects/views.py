@@ -22,7 +22,7 @@ def browse_articles(request):
     keyword = request.GET.get('keyword', '')
     category_name = request.GET.get('category', '')
 
-    articles = Article.objects.all()
+    articles = Article.objects.all().select_related('category')
 
     if keyword:
         articles = articles.filter(title__icontains=keyword)
