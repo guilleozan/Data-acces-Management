@@ -57,7 +57,7 @@ class ArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user.has_perm('subjects.delete_article')
 
 def article_detail(request, article_id):
-    article = get_object_or_404(Article, id=article_id)
+    article = get_object_or_404(Article, article_id=article_id)
     return render(request, 'auth/article_detail.html', {'article': article})
 
 def signup(request):
