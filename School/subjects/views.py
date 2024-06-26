@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Group
@@ -56,16 +56,9 @@ class ArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.request.user.has_perm('subjects.delete_article')
 
-def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'auth/signup.html', {'form': form})
+def article_detail(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    return render(request, 'auth/article_detail.html', {'article': article})
 
 def signup(request):
     if request.method == 'POST':
@@ -87,8 +80,6 @@ def signup(request):
             user.groups.add(group)
             login(request, user)
             return redirect('home')
-        
-        
     else:
         form = UserCreationForm()
     return render(request, 'auth/signup.html', {'form': form})
@@ -107,6 +98,3 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return render(request, 'auth/logged_out.html')
-
-
-

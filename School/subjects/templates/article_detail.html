@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% extends 'base_generic.html' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>{{ article.title }}</h1>
+  <p><strong>Category:</strong> {{ article.category.name }}</p>
+  {% if article.type %}
+    <p><strong>Type:</strong> {{ article.type }}</p>
+  {% endif %}
+  {% if article.born %}
+    <p><strong>Born:</strong> {{ article.born }}</p>
+  {% endif %}
+  {% if article.died %}
+    <p><strong>Died:</strong> {{ article.died }}</p>
+  {% endif %}
+  {% if article.nationality %}
+    <p><strong>Nationality:</strong> {{ article.nationality }}</p>
+  {% endif %}
+  {% if article.known_for %}
+    <p><strong>Known For:</strong> {{ article.known_for }}</p>
+  {% endif %}
+  {% if article.notable_work %}
+    <p><strong>Notable Work:</strong> {{ article.notable_work }}</p>
+  {% endif %}
+  {% if article.about %}
+    <p><strong>About:</strong> {{ article.about }}</p>
+  {% endif %}
+  {% if article.year %}
+    <p><strong>Year:</strong> {{ article.year }}</p>
+  {% endif %}
+  {% if article.medium %}
+    <p><strong>Medium:</strong> {{ article.medium }}</p>
+  {% endif %}
+  {% if article.dimensions %}
+    <p><strong>Dimensions:</strong> {{ article.dimensions }}</p>
+  {% endif %}
+  {% if article.location %}
+    <p><strong>Location:</strong> {{ article.location }}</p>
+  {% endif %}
+  {% if article.designed_by %}
+    <p><strong>Designed By:</strong> {{ article.designed_by }}</p>
+  {% endif %}
+  {% if article.developer %}
+    <p><strong>Developer:</strong> {{ article.developer }}</p>
+  {% endif %}
+</div>
+{% endblock %}
