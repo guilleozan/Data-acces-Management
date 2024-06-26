@@ -1,79 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .forms import ArticleForm
-from .models import Article, Category  
-
-"""
-I will add a proper add_article, as add article shows articles, 
-so problably i'll change that later.
-
- missing : 
- articles_detailes
- edit_articles
- delete_articles
-
-
-"""
-def home(request):
-    return render(request, 'home.html')
-
-def browse_articles(request):
-    keyword = request.GET.get('keyword', '')
-    category_name = request.GET.get('category', '')
-
-    articles = Article.objects.all().select_related('category')
-
-    if keyword:
-        articles = articles.filter(title__icontains=keyword)
-
-    if category_name:
-        articles = articles.filter(category__name=category_name)
-
-    categories = Category.objects.all()
-
-    return render(request, 'browse_articles.html', {'articles': articles, 'categories': categories})
-
-def add_article(request):
-    if request.method == 'POST':
-        form = ArticleForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('browse_articles')
-    else:
-        form = ArticleForm()
-    return render(request, 'add_article.html', {'form': form})
-
-def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'auth/signup.html', {'form': form})
-
-def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'auth/login.html', {'form': form})
-
-def logout_view(request):
-    logout(request)
-    return render(request, 'auth/logged_out.html')
-
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -131,23 +58,40 @@ class ArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def signup(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'auth/signup.html', {'form': form})
+
+def signup(request):
+    if request.method == 'POST':
         role = request.POST['role']
+        request.POST._mutable = True
+        del request.POST['role']
+
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            if role == 'Administrator':
+                group = Group.objects.get(name='Administrator')
+            elif role == 'Tutor':
+                group = Group.objects.get(name='Tutor')
+            elif role == 'Student':
+                group = Group.objects.get(name='Student')
+            
+            user.groups.add(group)
+            login(request, user)
+            return redirect('home')
         
-        user = User.objects.create_user(username=username, password=password)
         
-        if role == 'Administrator':
-            group = Group.objects.get(name='Administrator')
-        elif role == 'Tutor':
-            group = Group.objects.get(name='Tutor')
-        elif role == 'Student':
-            group = Group.objects.get(name='Student')
-        
-        user.groups.add(group)
-        login(request, user)
-        return redirect('home')
-    return render(request, 'auth/signup.html')
+    else:
+        form = UserCreationForm()
+    return render(request, 'auth/signup.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -163,4 +107,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return render(request, 'auth/logged_out.html')
+
+
 
