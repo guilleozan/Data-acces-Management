@@ -16,7 +16,14 @@
     <header>
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'home' %}">School</a>
+        <a class="navbar-brand" href="{% url 'home' %}">
+          School Library 
+          {% if user.is_authenticated %} 
+              {% with user.groups.first as group %}
+                ({{ group.name }})
+              {% endwith %}
+          {% endif %}
+        </a>
         <button
           class="navbar-toggler"
           type="button"
@@ -35,12 +42,17 @@
                 >Browse Articles</a
               >
             </li>
-            {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'create_article' %}">
-                Create Article
-              </a>
-            </li>
+            {% if user.is_authenticated %} 
+              {% with user.groups.first as group %}
+                {% if group.name == "Administrator" or group.name == "Tutor" %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create_article' %}">
+                      Create Article
+                    </a>
+                  </li>
+                {% endif %}
+              {% endwith %}
+
             <li class="nav-item">
               <a class="nav-link" href="{% url 'logout' %}">Logout</a>
             </li>

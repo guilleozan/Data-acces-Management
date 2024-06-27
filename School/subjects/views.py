@@ -12,7 +12,7 @@ def home(request):
 @login_required
 def delete_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
-    allowed_roles = ['Administrator', 'Tutor']
+    allowed_roles = ['Administrator']
     if request.user.groups.filter(name__in=allowed_roles).exists():
         if request.method == 'POST':
             article.delete()
@@ -98,7 +98,9 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')
+            # Redirect to 'next' parameter or a default page
+            next_url = request.GET.get('next', 'home')
+            return redirect(next_url)
     else:
         form = AuthenticationForm()
     return render(request, 'auth/login.html', {'form': form})
