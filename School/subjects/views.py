@@ -54,17 +54,20 @@ def create_article(request):
         return redirect('browse_articles')
 
 @login_required
-@permission_required('subjects.change_article', raise_exception=True)
 def edit_article(request, pk):
     article = get_object_or_404(Article, pk=pk)
-    if request.method == 'POST':
-        form = ArticleForm(request.POST, instance=article)
-        if form.is_valid():
-            form.save()
-            return redirect('browse_articles')
+    allowed_roles = ['Administrator', 'Tutor']
+    if request.user.groups.filter(name__in=allowed_roles).exists():
+        if request.method == 'POST':
+            form = ArticleForm(request.POST, instance=article)
+            if form.is_valid():
+                form.save()
+                return redirect('browse_articles')
+        else:
+            form = ArticleForm(instance=article)
+        return render(request, 'auth/article_form.html', {'form': form})
     else:
-        form = ArticleForm(instance=article)
-    return render(request, 'auth/article_form.html', {'form': form})
+        return redirect('browse_articles')
 
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk)
