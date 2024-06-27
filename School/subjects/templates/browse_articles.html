@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 {% extends 'base_generic.html' %}
 
 {% block title %}Browse Articles{% endblock %}
@@ -11,11 +10,14 @@
     type="text"
     name="keyword"
     placeholder="Search by keyword"
+    value="{{ request.GET.keyword }}"
   />
   <select class="form-control mr-sm-2" name="category">
     <option value="">All Categories</option>
     {% for category in categories %}
-    <option value="{{ category.name }}">{{ category.name }}</option>
+    <option value="{{ category.name }}" {% if request.GET.category == category.name %}selected{% endif %}>
+      {{ category.name }}
+    </option>
     {% endfor %}
   </select>
   <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
@@ -25,10 +27,19 @@
 <ul class="list-group mt-4">
   {% for article in articles %}
   <li class="list-group-item">
-    <a href="{% url 'article_detail' article.article_id %}" target="_blank">
+    <a href="{% url 'article_detail' article.pk %}" target="_blank">
       {{ article.title }} - {{ article.category.name }}
     </a>
+    {% if user.is_authenticated and user.groups.first.name in allowed_roles %}
+    <a class="btn btn-warning btn-sm" href="{% url 'edit_article' article.pk %}">Edit</a>
+    <form method="post" action="{% url 'delete_article' article.pk %}" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" name="delete" class="btn btn-danger btn-sm">Delete</button>
+    </form>
+    {% endif %}
   </li>
+  {% empty %}
+  <li class="list-group-item">No articles found.</li>
   {% endfor %}
 </ul>
 {% endblock %}

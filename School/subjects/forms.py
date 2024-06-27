@@ -4,4 +4,12 @@ from .models import Article
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['title', 'category', 'type', 'born', 'died', 'nationality', 'known_for', 'notable_work', 'about', 'year', 'medium', 'dimensions', 'location', 'designed_by', 'developer']
+        fields = [
+            'title', 'category', 'type', 'born', 'died', 'nationality',
+            'known_for', 'notable_work', 'about', 'year', 'medium',
+            'dimensions', 'location', 'designed_by', 'developer'
+        ]
+        widgets = {
+            'born': forms.DateInput(attrs={'type': 'date'}),
+            'died': forms.DateInput(attrs={'type': 'date'}),
+        }
