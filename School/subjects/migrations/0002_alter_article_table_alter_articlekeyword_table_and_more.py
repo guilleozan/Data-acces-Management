@@ -10,24 +10,24 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterModelTable(
-            name='article',
-            table='Articles',
-        ),
-        migrations.AlterModelTable(
-            name='articlekeyword',
-            table='ArticleKeywords',
-        ),
-        migrations.AlterModelTable(
-            name='category',
-            table='Categories',
-        ),
-        migrations.AlterModelTable(
-            name='keyword',
-            table='Keywords',
-        ),
-        migrations.AlterModelTable(
-            name='user',
-            table='Users',
-        ),
+        # migrations.AlterModelTable(
+        #     name='article',
+        #     table='Articles',
+        # ),
+        # migrations.AlterModelTable(
+        #     name='articlekeyword',
+        #     table='ArticleKeywords',
+        # ),
+        # migrations.AlterModelTable(
+        #     name='category',
+        #     table='Categories',
+        # ),
+        # migrations.AlterModelTable(
+        #     name='keyword',
+        #     table='Keywords',
+        # ),
+        # migrations.AlterModelTable(
+        #     name='user',
+        #     table='Users',
+        # ),
     ]

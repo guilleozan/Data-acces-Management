@@ -4,14 +4,15 @@ System{% endblock %} {% block content %}
 <div class="container mt-4">
   <h1>Sign Up</h1>
   <form method="post">
-    {% csrf_token %} {{ form.as_p }}
+    {% csrf_token %}
     <div class="form-group">
-      <label for="role">Role:</label>
+      <label for="role">Role: (For Testing Purposes)</label>
       <select name="role" id="role" class="form-control" required>
         <option value="Student">Student</option>
         <option value="Tutor">Tutor</option>
         <option value="Administrator">Administrator</option>
       </select>
+      {{ form.as_p }}
     </div>
     <button type="submit" class="btn btn-primary">Sign Up</button>
   </form>

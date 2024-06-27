@@ -30,13 +30,16 @@
     <a href="{% url 'article_detail' article.pk %}" target="_blank">
       {{ article.title }} - {{ article.category.name }}
     </a>
-    {% if user.is_authenticated and user.groups.first.name in allowed_roles %}
-    <a class="btn btn-warning btn-sm" href="{% url 'edit_article' article.pk %}">Edit</a>
-    <form method="post" action="{% url 'delete_article' article.pk %}" style="display:inline;">
-      {% csrf_token %}
-      <button type="submit" name="delete" class="btn btn-danger btn-sm">Delete</button>
-    </form>
+    {% if user.is_authenticated and user.groups.first.name == "Administrator" %}
+      <form method="post" action="{% url 'delete_article' article.pk %}" style="display:inline; float: right; margin-left: 10px;">
+        {% csrf_token %}
+        <button type="submit" name="delete" class="btn btn-danger btn-sm">Delete</button>
+      </form>
     {% endif %}
+    {% if user.is_authenticated and user.groups.first.name in allowed_roles %}
+    <a class="btn btn-warning btn-sm" style=" float: right;" href="{% url 'edit_article' article.pk %}">Edit</a>
+    {% endif %}
+    
   </li>
   {% empty %}
   <li class="list-group-item">No articles found.</li>
