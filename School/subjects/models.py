@@ -20,6 +20,9 @@ class Category(models.Model):
     class Meta:
         db_table = 'Categories'
         
+    def __str__(self):
+        return self.name
+        
 
 class Article(models.Model):
     article_id = models.AutoField(primary_key=True)
