@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class User(models.Model):
     ROLE_CHOICES = [
         ('Administrator', 'Administrator'),
@@ -52,3 +53,5 @@ class ArticleKeyword(models.Model):
     class Meta:
         unique_together = ('article', 'keyword')
         db_table = 'ArticleKeywords'
+
+        

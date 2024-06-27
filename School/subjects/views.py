@@ -1,15 +1,25 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.contrib.auth.models import User, Group 
 from .forms import ArticleForm
 from .models import Article, Category
 
 def home(request):
     return render(request, 'home.html')
+
+@login_required
+def delete_article(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    allowed_roles = ['Administrator', 'Tutor']
+    if request.user.groups.filter(name__in=allowed_roles).exists():
+        if request.method == 'POST':
+            article.delete()
+            return redirect('browse_articles')
+        return render(request, 'auth/article_confirm_delete.html', {'article': article})
+    else:
+        return redirect('browse_articles')
 
 def browse_articles(request):
     keyword = request.GET.get('keyword', '')
@@ -24,40 +34,40 @@ def browse_articles(request):
         articles = articles.filter(category__name=category_name)
 
     categories = Category.objects.all()
+    allowed_roles = ['Administrator', 'Tutor']
 
-    return render(request, 'browse_articles.html', {'articles': articles, 'categories': categories})
+    return render(request, 'browse_articles.html', {'articles': articles, 'categories': categories, 'allowed_roles': allowed_roles})
 
 @login_required
-@permission_required('subjects.add_article', raise_exception=True)
-def add_article(request):
+def create_article(request):
+    allowed_roles = ['Administrator', 'Tutor']
+    if request.user.groups.filter(name__in=allowed_roles).exists():
+        if request.method == 'POST':
+            form = ArticleForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('browse_articles')
+        else:
+            form = ArticleForm()
+        return render(request, 'auth/article_form.html', {'form': form})
+    else:
+        return redirect('browse_articles')
+
+@login_required
+@permission_required('subjects.change_article', raise_exception=True)
+def edit_article(request, pk):
+    article = get_object_or_404(Article, pk=pk)
     if request.method == 'POST':
-        form = ArticleForm(request.POST)
+        form = ArticleForm(request.POST, instance=article)
         if form.is_valid():
             form.save()
             return redirect('browse_articles')
     else:
-        form = ArticleForm()
+        form = ArticleForm(instance=article)
     return render(request, 'auth/article_form.html', {'form': form})
 
-class ArticleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Article
-    fields = ['title', 'content']
-    template_name = 'auth/article_form.html'
-    success_url = '/browse_articles/'
-
-    def test_func(self):
-        return self.request.user.has_perm('subjects.change_article')
-
-class ArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Article
-    template_name = 'auth/article_confirm_delete.html'
-    success_url = '/browse_articles/'
-
-    def test_func(self):
-        return self.request.user.has_perm('subjects.delete_article')
-
-def article_detail(request, article_id):
-    article = get_object_or_404(Article, article_id=article_id)
+def article_detail(request, pk):
+    article = get_object_or_404(Article, pk=pk)
     return render(request, 'auth/article_detail.html', {'article': article})
 
 def signup(request):
@@ -70,14 +80,9 @@ def signup(request):
 
         if form.is_valid():
             user = form.save()
-            if role == 'Administrator':
-                group = Group.objects.get(name='Administrator')
-            elif role == 'Tutor':
-                group = Group.objects.get(name='Tutor')
-            elif role == 'Student':
-                group = Group.objects.get(name='Student')
-            
-            user.groups.add(group)
+            user_role_group = Group.objects.get(name=role)
+            user.groups.add(user_role_group)
+            user.save()
             login(request, user)
             return redirect('home')
     else:
@@ -98,3 +103,4 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return render(request, 'auth/logged_out.html')
+

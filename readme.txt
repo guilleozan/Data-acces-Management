@@ -1,5 +1,7 @@
+Esta es la ultima version donde se pueden eliminar y agregar usuarios
 
 # SchoolApp
+
 
 School Project
  
@@ -31,7 +33,6 @@ Create a virtual environment named `schoolapp` to isolate the project dependenci
 
 inside DATA-ACCES-MANAGEMENT 
 ```bash
-python -m venv schoolapp
 ```
 
 Activate the virtual environment:
